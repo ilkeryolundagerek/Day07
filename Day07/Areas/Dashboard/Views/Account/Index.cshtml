@@ -25,18 +25,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Fullname)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmailConfirmed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LockoutEnabled)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -46,7 +34,7 @@
             <tr>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Details", "Details", new { id=item.Id })
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
@@ -60,37 +48,80 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Fullname)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LockoutEnabled)
-                </td>
                 <td class="text-nowrap">
                     @if (item.Active)
                     {
-                        <i class="fa-solid fa-user-large text-success" title="Active"></i>
+                        <i class="fa-solid fa-user-large text-success status" id="active.@item.Id" title="Active"></i>
                     }
                     else
                     {
-                        <i class="fa-solid fa-user-large-slash text-danger" title="Passive"></i>
+                        <i class="fa-solid fa-user-large-slash text-danger status" id="active.@item.Id" title="Passive"></i>
                     }
                     @if (item.Deleted)
                     {
-                        <i class="fa-solid fa-recycle text-danger" title="Deleted"></i>
+                        <i class="fa-solid fa-recycle text-danger status" id="deleted.@item.Id" title="Deleted"></i>
                     }
                     else
                     {
-                        <i class="fa-solid fa-trash-can text-secondary" title="No Deleted"></i>
+                        <i class="fa-solid fa-trash-can text-secondary status" id="deleted.@item.Id" title="No Deleted"></i>
+                    }
+                    @if (item.EmailConfirmed)
+                    {
+                        <i class="fa-solid fa-envelope-circle-check text-success status" id="email_confirmed.@item.Id" title="Confirmed"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-envelope text-danger status" id="email_confirmed.@item.Id" title="Not Confirm"></i>
+                    }
+                    @if (item.PhoneNumberConfirmed)
+                    {
+                        <i class="fa-solid fa-phone text-success status" id="phone_number_confirmed.@item.Id" title="Confirmed"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-phone-slash text-danger status" id="phone_number_confirmed.@item.Id" title="Not Confirm"></i>
+                    }
+                    @if (item.TwoFactorEnabled)
+                    {
+                        <i class="fa-solid fa-shield text-success status" id="two_factor_confirmed.@item.Id" title="Enabled"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-shield text-danger status" name="@item.Id" id="two_factor_confirmed.@item.Id" title="Disabled"></i>
+                    }
+                    @if (item.LockoutEnabled)
+                    {
+                        <i class="fa-solid fa-lock text-dark status" name="@item.Id" id="lockout_enabled.@item.Id" title="Lockout Enabled"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-lock-open text-success status" name="@item.Id" id="lockout_enabled.@item.Id" title="Lockout Disabled"></i>
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            $(".status").click((e) => {
+                let x = e.target
+                let uid = x.id.split('.')[1];
+                let id = x.id.split('.')[0];
+                console.log(id, uid);
+                $.ajax({
+                    url: "/dashboard/account/toggle/" + uid + "?p=" + id,
+                    success: (result) => {
+                        console.log(result)
+                        if (result == 'true') {
+                            $(x).removeClass('text-danger').addClass('text-success')
+                        } else {
+                            $(x).removeClass('text-success').addClass('text-danger')
+                        }
+                    }
+                });
+            })
+        });
+    </script>
+}

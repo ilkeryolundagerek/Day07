@@ -1,0 +1,11 @@
+﻿@using Day07.Entities;
+@model CustomUser
+@{
+    ViewData["Title"] = "Details";
+}
+
+<form asp-action="AddRole" asp-controller="Account" asp-area="dashboard" asp-route-id="@Model.Id">
+    <h1>@Model.UserName (@Model.Id)</h1>
+    <select name="role" onchange="this.form.submit()" asp-items="@ViewBag.Roles" multiple></select>
+</form>
+
