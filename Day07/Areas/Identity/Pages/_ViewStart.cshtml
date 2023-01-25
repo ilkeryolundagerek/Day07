@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<CustomUser> signInManager
+@{
+    if (signInManager.IsSignedIn(User))
+    {
+        Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+}
